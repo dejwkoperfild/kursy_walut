@@ -8,7 +8,8 @@ try:
     response.raise_for_status()
     data = response.json()
     rate = data['rates'][0]['mid']
-    print(f"Aktualny kurs CHF: {rate} PLN")
+    date = data['rates'][0]['effectiveDate']
+    print(f"Aktualny kurs CHF w dniu {date} wynosi {rate} PLN")
 
 except RequestException as e:
     print(f"Blad podczas komunikacji z API {e}")
