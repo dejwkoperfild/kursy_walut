@@ -1,11 +1,15 @@
 import requests
+from requests.exceptions import RequestException
 
-url = "http://api.nbp.pl/api/exchangerates/rates/a/chf/?format=json"
-response = requests.get(url)
-
-if response.status_code == 200:
+payload = {'format':'json'}
+url = "https://api.nbp.pl/api/exchangerates/rates/a/chf/"
+try:
+    response = requests.get(url, params = payload, timeout = 15)
+    response.raise_for_status()
     data = response.json()
     rate = data['rates'][0]['mid']
     print(f"Aktualny kurs CHF: {rate} PLN")
-else:
-    print(f"Błąd zapytania: kod {response.status_code}")
+
+except RequestException as e:
+    print(f"Blad podczas komunikacji z API {e}")
+
