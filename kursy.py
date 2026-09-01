@@ -20,6 +20,7 @@ try:
             data_publikacji = kurs['effectiveDate']
             wartosc_srednia = kurs['mid']
             writer.writerow({'Date': data_publikacji, 'rate': wartosc_srednia})
+        print("Pomyślnie zapisano plik")
 
 
 except RequestException as e:
