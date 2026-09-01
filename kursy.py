@@ -4,7 +4,8 @@ import csv
 
 startDate = '2026-08-01'
 endDate = '2026-08-31'
-
+# TO DO 
+# Dorobienie okienka z wyborem dat
 payload = {'format':'json'}
 currency = 'chf'
 url = f"https://api.nbp.pl/api/exchangerates/rates/a/{currency}/{startDate}/{endDate}"
