@@ -5,6 +5,13 @@ import tkinter as tk
 from tkcalendar import DateEntry
 from datetime import date, timedelta
 
+def get_date_range():
+    data_od = calendar_from.get_date()
+    data_do = calendar_to.get_date()
+    label_result.config(text=f"Od: {data_od} Do: {data_do}")
+
+
+
 root = tk.Tk()
 root.title("Wybor daty")
 root.geometry("350x200")
@@ -12,14 +19,31 @@ root.geometry("350x200")
 start_end_date = date.today()
 start_pick_date = start_end_date - timedelta(days=183)
 
-calendar = DateEntry(
+calendar_from = DateEntry(
         root,
         width=15,
         mindate=start_pick_date,
         maxdate=start_end_date,
         date_pattern='yyyy-mm-dd'
         )
-calendar.pack(padx=20, pady=20)
+
+calendar_to = DateEntry(
+        root,
+        width=15,
+        mindate=start_pick_date,
+        maxdate=start_end_date,
+        date_pattern='yyyy-mm-dd'
+        )
+
+tk.Label(root, text="Data początkowa (od):").grid(row=0, column=0, padx=10,pady=20, sticky="e")
+calendar_from.grid(row=0, column=1, padx=10, pady=20)
+
+tk.Label(root, text="Data końcowa (od):").grid(row=1,column=0,padx=10,pady=5,sticky="e")
+calendar_to.grid(row=1, column=1, padx=10,pady=5)
+
+tk.Button(root, text="Wybierz",command=get_date_range).grid(row=2, column=0,columnspan=2, pady=15)
+label_result = tk.Label(root, text="")
+label_result.grid(row=3, column=0, columnspan=2)
 
 root.mainloop()
 
