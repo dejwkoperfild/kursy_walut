@@ -1,6 +1,16 @@
 import requests
 from requests.exceptions import RequestException
 import csv
+import tkinter as tk
+from tkcalendar import DateEntry
+from datetime import date, timedelta
+
+root = tk.Tk()
+root.title("Wybor daty")
+root.geometry("350x200")
+
+root.mainloop()
+
 
 startDate = '2026-08-01'
 endDate = '2026-08-31'
