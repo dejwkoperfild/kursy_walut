@@ -5,10 +5,17 @@ import tkinter as tk
 from tkcalendar import DateEntry
 from datetime import date, timedelta
 
-def get_date_range():
-    data_od = calendar_from.get_date()
-    data_do = calendar_to.get_date()
-    label_result.config(text=f"Od: {data_od} Do: {data_do}")
+
+
+startDate = None
+endDate = None
+
+def save_close():
+    global startDate, endDate
+    startDate = calendar_from.get_date()
+    endDate = calendar_to.get_date()
+
+    root.destroy()
 
 
 
@@ -41,17 +48,10 @@ calendar_from.grid(row=0, column=1, padx=10, pady=20)
 tk.Label(root, text="Data końcowa (od):").grid(row=1,column=0,padx=10,pady=5,sticky="e")
 calendar_to.grid(row=1, column=1, padx=10,pady=5)
 
-tk.Button(root, text="Wybierz",command=get_date_range).grid(row=2, column=0,columnspan=2, pady=15)
-label_result = tk.Label(root, text="")
-label_result.grid(row=3, column=0, columnspan=2)
-
+tk.Button(root, text="Zapisz i zamknij", command=save_close).grid(row=2, column=0, columnspan=2, pady=15)
 root.mainloop()
 
 
-startDate = '2026-08-01'
-endDate = '2026-08-31'
-# TO DO 
-# Dorobienie okienka z wyborem dat
 payload = {'format':'json'}
 currency = 'chf'
 url = f"https://api.nbp.pl/api/exchangerates/rates/a/{currency}/{startDate}/{endDate}"
