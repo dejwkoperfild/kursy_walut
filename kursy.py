@@ -9,6 +9,18 @@ root = tk.Tk()
 root.title("Wybor daty")
 root.geometry("350x200")
 
+start_end_date = date.today()
+start_pick_date = start_end_date - timedelta(days=183)
+
+calendar = DateEntry(
+        root,
+        width=15,
+        mindate=start_pick_date,
+        maxdate=start_end_date,
+        date_pattern='yyyy-mm-dd'
+        )
+calendar.pack(padx=20, pady=20)
+
 root.mainloop()
 
 
