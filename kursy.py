@@ -1,10 +1,8 @@
-import requests
-from requests.exceptions import RequestException
 import csv
 import tkinter as tk
 from tkcalendar import DateEntry
 from datetime import date, timedelta
-
+from nbp_api import get_exchange_rates
 
 
 startDate = None
@@ -51,14 +49,8 @@ calendar_to.grid(row=1, column=1, padx=10,pady=5)
 tk.Button(root, text="Zapisz i zamknij", command=save_close).grid(row=2, column=0, columnspan=2, pady=15)
 root.mainloop()
 
-
-payload = {'format':'json'}
-currency = 'chf'
-url = f"https://api.nbp.pl/api/exchangerates/rates/a/{currency}/{startDate}/{endDate}"
-try:
-    response = requests.get(url, params = payload, timeout = 15)
-    response.raise_for_status()
-    data = response.json()
+data = get_exchange_rates('chf', startDate, endDate)
+if data:
     with open('kursy.csv','w',newline='') as csvfile:
         fieldnames = ['Date','rate']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -69,7 +61,8 @@ try:
             writer.writerow({'Date': data_publikacji, 'rate': wartosc_srednia})
         print("Pomyślnie zapisano plik")
 
+else:
+    print("Nie udało się pobrać danych")
 
-except RequestException as e:
-    print(f"Blad podczas komunikacji z API {e}")
+
 
