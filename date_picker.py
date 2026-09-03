@@ -45,7 +45,7 @@ def get_dates():
 
     tk.Button(root, text="Zapisz i zamknij", command=save_close).grid(row=2, column=1, columnspan=2, pady=15)
 
-    opcje = ["chf", "eur", "usd", "sek"]
+    opcje = ["chf", "eur", "usd", "sek", "gpb", "uah"]
 
     combo = ttk.Combobox(root, values=opcje, state="readonly")
     combo.current(0)
