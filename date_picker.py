@@ -1,18 +1,18 @@
 import tkinter as tk
 from tkcalendar import DateEntry
 from datetime import date, timedelta
-
+from tkinter import ttk
 
 def get_dates():
-    selected_dates = {"start": None, "end": None}
+    results = {"start": None, "end": None, "currency": None}
 
 
     def save_close():
-        selected_dates["start"] = calendar_from.get_date()
-        selected_dates["end"] = calendar_to.get_date()
+        results["start"] = calendar_from.get_date()
+        results["end"] = calendar_to.get_date()
+        results["currency"] = combo.get()
         root.destroy()
-
-
+    
 
     root = tk.Tk()
     root.title("Wybor daty")
@@ -43,8 +43,19 @@ def get_dates():
     tk.Label(root, text="Data końcowa (do):").grid(row=1,column=0,padx=10,pady=5,sticky="e")
     calendar_to.grid(row=1, column=1, padx=10,pady=5)
 
-    tk.Button(root, text="Zapisz i zamknij", command=save_close).grid(row=2, column=0, columnspan=2, pady=15)
+    tk.Button(root, text="Zapisz i zamknij", command=save_close).grid(row=2, column=1, columnspan=2, pady=15)
+
+    opcje = ["chf", "eur", "usd", "sek"]
+
+    combo = ttk.Combobox(root, values=opcje, state="readonly")
+    combo.current(0)
+    combo.grid(row=2, column=0, columnspan=1, pady=15)
+    
+    def aktualizuj_pole(event):
+        currency = combo.get()
+
+    combo.bind("<<ComboboxSelected>>", aktualizuj_pole)
 
     root.mainloop()
 
-    return selected_dates["start"], selected_dates["end"]
+    return results["start"], results["end"], results["currency"]

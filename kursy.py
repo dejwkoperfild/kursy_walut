@@ -4,10 +4,10 @@ from nbp_api import get_exchange_rates
 
 
 
-startDate, endDate = get_dates()
+startDate, endDate, currency = get_dates()
 
 if startDate and endDate:
-    data = get_exchange_rates('chf', startDate, endDate)
+    data = get_exchange_rates(currency, startDate, endDate)
     if data:
         with open('kursy.csv','w',newline='') as csvfile:
             fieldnames = ['Date','rate']
