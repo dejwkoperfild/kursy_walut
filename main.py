@@ -1,6 +1,6 @@
 import csv
-from date_picker import get_dates
-from nbp_api import get_exchange_rates
+from src.date_picker import get_dates
+from src.nbp_api import get_exchange_rates
 
 
 
