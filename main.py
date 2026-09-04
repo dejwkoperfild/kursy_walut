@@ -1,15 +1,15 @@
 import csv
-from date_picker import get_dates
-from nbp_api import get_exchange_rates
+from src.date_picker import get_dates
+from src.nbp_api import get_exchange_rates
 
 
 
 startDate, endDate, currency = get_dates()
 
-if startDate and endDate:
+if startDate and endDate and currency:
     data = get_exchange_rates(currency, startDate, endDate)
     if data:
-        with open('kursy.csv','w',newline='') as csvfile:
+        with open(f'output_files/kursy_{currency}.csv','w',newline='') as csvfile:
             fieldnames = ['Date','rate']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
