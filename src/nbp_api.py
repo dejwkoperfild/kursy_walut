@@ -1,5 +1,8 @@
 import requests
+import logging
 from requests.exceptions import RequestException
+
+logging.basicConfig(level=logging.ERROR)
 
 def get_exchange_rates(currency, start_date, end_date):
     payload = {'format':'json'}
@@ -10,7 +13,14 @@ def get_exchange_rates(currency, start_date, end_date):
         data = response.json()
         return data
 
-    except RequestException as e:
-        print(f"Błąd podczas komunikacji z API: {e}")
-        return None
+    except requests.exceptions.HTTPError as e:
+        logging.error(f"Błąd HTTP: {e.response.status_code} - {e}")
+    except requests.exceptions.ConnectionError as e:
+        logging.error(f"Błąd połączenia z API NBP: {e}")
+    except requests.exceptions.Timeout as e:
+        logging.error(f"Przekroczono czas oczekiwania: {e}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Nieoczekiwany błąd żądania: {e}")
+
+    return None
 

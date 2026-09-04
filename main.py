@@ -9,7 +9,7 @@ startDate, endDate, currency = get_dates()
 if startDate and endDate:
     data = get_exchange_rates(currency, startDate, endDate)
     if data:
-        with open('kursy.csv','w',newline='') as csvfile:
+        with open('output_files/kursy.csv','w',newline='') as csvfile:
             fieldnames = ['Date','rate']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
