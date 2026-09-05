@@ -39,7 +39,7 @@ if startDate and endDate and currency:
         print("Nie udało się pobrać danych")
 
 else:
-    print("Nie udało się wybrać zakresu dat")
+    print("Nie udało się pobrać danych od użytkownika")
 
 
 
