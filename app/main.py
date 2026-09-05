@@ -1,11 +1,11 @@
 import csv
-from src.date_picker import get_dates
+from src.view_data import get_dates
 from src.nbp_api import get_exchange_rates
 import matplotlib.pyplot as plt
 
-
-
-startDate, endDate, currency = get_dates()
+currencies = ["chf", "eur", "usd", "sek", "gpb"]
+days = 183
+startDate, endDate, currency = get_dates(days, currencies)
 
 if startDate and endDate and currency:
     data = get_exchange_rates(currency, startDate, endDate)
