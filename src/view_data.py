@@ -2,8 +2,7 @@ import tkinter as tk
 from tkcalendar import DateEntry
 from datetime import date, timedelta
 from tkinter import ttk
-
-from src.date_view import DateSelectorDialog
+from src.user_interface import DateSelectorDialog
 
 def get_dates(days : int, currencies : list):
     start_end_date = date.today()
