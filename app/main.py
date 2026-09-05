@@ -1,6 +1,6 @@
 import csv
 import datetime
-from src.view_data import get_dates
+from src.view_data import get_data_from_user
 from src.nbp_api import get_exchange_rates
 import matplotlib.dates as mdates
 from datetime import datetime
@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 currencies = ["chf", "eur", "usd", "sek", "gpb"]
 days = 183
-startDate, endDate, currency = get_dates(days, currencies)
+startDate, endDate, currency = get_data_from_user(days, currencies)
 
 if startDate and endDate and currency:
     data = get_exchange_rates(currency, startDate, endDate)
