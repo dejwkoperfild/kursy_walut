@@ -18,10 +18,13 @@ def save_to_csv(data, currency, startDate, endDate):
 def save_to_png(data, currency, startDate, endDate):
     x_axis = [datetime.strptime(kurs['effectiveDate'], '%Y-%m-%d') for kurs in data['rates']]
     y_axis = [kurs['bid'] for kurs in data['rates']]
-    plt.plot(x_axis, y_axis)
+    z_axis = [kurs['ask'] for kurs in data['rates']]
+    plt.plot(x_axis, y_axis, label='Kurs sprzedaży')
+    plt.plot(x_axis, z_axis, label='Kurs kupna')
     plt.title(f"Wykres kursu {currency} od {startDate} do {endDate}")
     plt.xlabel("Data")
-    plt.ylabel("Kurs sprzedaży")
+    plt.ylabel("Kurs")
+    plt.legend()
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
     plt.gcf().autofmt_xdate()
