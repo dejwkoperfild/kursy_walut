@@ -23,7 +23,7 @@ def build_session() -> requests.Session:
 def get_exchange_rates(currency, start_date, end_date):
     session = build_session()
     payload = {'format':'json'}
-    url = f"https://api.nbp.pl/api/exchangerates/rates/a/{currency}/{start_date}/{end_date}"
+    url = f"https://api.nbp.pl/api/exchangerates/rates/c/{currency}/{start_date}/{end_date}"
     try:
         response = session.get(url, params = payload, timeout = 15)
         response.raise_for_status()
