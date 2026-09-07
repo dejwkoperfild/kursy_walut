@@ -18,7 +18,7 @@ def test_get_exchange_rates_success():
     assert result["currency"] == "dolar amerykański"
     assert result["code"] == "USD"
     session.get.assert_called_once_with(
-        "https://api.nbp.pl/api/exchangerates/rates/a/USD/2023-01-01/2023-01-10",
+        "https://api.nbp.pl/api/exchangerates/rates/c/USD/2023-01-01/2023-01-10",
         params={"format": "json"},
         timeout=15,
     )
