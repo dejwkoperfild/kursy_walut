@@ -73,8 +73,11 @@ class DateSelectorDialog:
         tk.Label(self.new_frame, text="Waluta docelowa:").grid(row=1, column=0, padx=10, pady=10, sticky="w")
         
         tk.Button(self.new_frame, text="Przelicz", command=self.convert_amount).grid(row=2, column=0, padx=10, pady=15)
-        tk.Button(self.new_frame, text="Wyczyść", command=self.clear_conversion).grid(row=2, column=1, padx=10, pady=15, sticky="e")
-        
+        tk.Button(self.new_frame, text="Wyczyść", command=self.clear_conversion).grid(row=2, column=1, padx=10, pady=15, sticky="w")
+
+        self.combo = ttk.Combobox(self.new_frame, values=currencies, state="readonly")
+        self.combo.current(0)
+        self.combo.grid(row=1, column=1, padx=10, pady=10)
 
 
     def convert_amount(self):
