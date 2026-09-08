@@ -67,6 +67,7 @@ class DateSelectorDialog:
         tk.Button(self.main_frame, text="Zapisz i zamknij", command=self.save_and_close).grid(row=3, column=0, columnspan=2, pady=15, sticky="w")
 
 
+        # create the widgets for the new tab
         tk.Label(self.new_frame, text="Kwota w PLN:").grid(row=0, column=0, padx=10, pady=(25, 10), sticky="w")
         
         tk.Label(self.new_frame, text="Waluta docelowa:").grid(row=1, column=0, padx=10, pady=10, sticky="w")
