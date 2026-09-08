@@ -45,6 +45,7 @@ class DateSelectorDialog:
         
         self.results = {"start": None, "end": None, "currency": None}
 
+        # create the date selection widgets for the main view
         self.calendar_from = DateEntry(
             self.main_frame, width=15, mindate=min_date, maxdate=max_date, date_pattern='yyyy-mm-dd'
         )
@@ -63,12 +64,15 @@ class DateSelectorDialog:
         self.combo.current(0)
         self.combo.grid(row=2, column=1, padx=10, pady=15)
 
+        tk.Button(self.main_frame, text="Zapisz i zamknij", command=self.save_and_close).grid(row=3, column=1, columnspan=2, pady=15)
+
+
     def save_and_close(self):
         self.results["start"] = self.calendar_from.get_date()
         self.results["end"] = self.calendar_to.get_date()
         self.results["currency"] = self.combo.get()
-        self.main_frame.destroy()
+        self.root.destroy()
 
     def show(self):
-        self.main_frame.mainloop()
+        self.root.mainloop()
         return self.results["start"], self.results["end"], self.results["currency"]
