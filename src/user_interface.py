@@ -7,7 +7,7 @@ from tkinter import Menu
 class DateSelectorDialog:
     def __init__(self, min_date, max_date, currencies):
         self.root = tk.Tk()
-        self.root.title("Wybór daty")
+        self.root.title("Kursy walut NBP")
         self.root.geometry("350x200")
 
         menu_bar = Menu(self.root)
@@ -40,11 +40,10 @@ class DateSelectorDialog:
         tk.Label(self.root, text="Data końcowa (do):").grid(row=1, column=0, padx=10, pady=5, sticky="w")
         self.calendar_to.grid(row=1, column=1, padx=10, pady=5)
 
-        tk.Button(self.root, text="Zapisz i zamknij", command=self.save_and_close).grid(row=2, column=1, columnspan=2, pady=20)
-
+        tk.Label(self.root, text="Waluta:").grid(row=2, column=0, padx=10, pady=15, sticky="w")
         self.combo = ttk.Combobox(self.root, values=currencies, state="readonly")
         self.combo.current(0)
-        self.combo.grid(row=2, column=0, columnspan=1, pady=15)
+        self.combo.grid(row=2, column=1, padx=10, pady=15)
 
     def save_and_close(self):
         self.results["start"] = self.calendar_from.get_date()
