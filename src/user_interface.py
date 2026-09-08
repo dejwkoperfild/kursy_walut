@@ -1,7 +1,10 @@
+from cProfile import label
+from logging import root
 import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import Menu
+
 
 
 class DateSelectorDialog:
@@ -12,18 +15,28 @@ class DateSelectorDialog:
 
         menu_bar = Menu(self.root)
         self.root.config(menu=menu_bar)
-                
+        new_tab = tk.Frame(self.root)
+        main_tab = tk.Frame(self.root)
         def about():
             print("About this application")
 
-        file_menu = Menu(menu_bar, tearoff=0)
-        menu_bar.add_cascade(label="File", menu=file_menu)
-        file_menu.add_command(label="Exit", command=self.root.quit)
 
-       
+        def show_new_tab():
+            pass  # Placeholder for the new tab functionality
+
+        def show_main_tab():
+            pass  # Placeholder for the main tab functionality
+
+        file_menu = Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label="Plik", menu=file_menu)
+        file_menu.add_command(label="Wyjście", command=self.root.quit)
+        file_menu.add_command(label="Główny widok", command=show_main_tab)
         help_menu = Menu(menu_bar, tearoff=0)
-        menu_bar.add_cascade(label="Help", menu=help_menu)
-        help_menu.add_command(label="About", command=about)
+        menu_bar.add_cascade(label="Pomoc", menu=help_menu)
+        menu_bar.add_command(label="Przelicznik walut", command=show_new_tab)
+        help_menu.add_command(label="O aplikacji", command=about)
+
+    
         
         self.results = {"start": None, "end": None, "currency": None}
 
