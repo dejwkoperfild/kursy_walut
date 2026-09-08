@@ -13,27 +13,32 @@ class DateSelectorDialog:
         self.root.title("Kursy walut NBP")
         self.root.geometry("350x200")
 
+        # create frames for the main view and the new tab
+        self.main_frame = tk.Frame(self.root)
+        self.new_frame = tk.Frame(self.root)
+
+        # place the frames in the same location, but only one will be visible at a time
+        self.main_frame.grid(row=0, column=0, sticky="nsew")
+        self.new_frame.grid(row=0, column=0, sticky="nsew")
+
+        self.main_frame.tkraise()
+
         menu_bar = Menu(self.root)
         self.root.config(menu=menu_bar)
-        new_tab = tk.Frame(self.root)
-        main_tab = tk.Frame(self.root)
         def about():
             print("About this application")
 
 
         def show_new_tab():
-            pass  # Placeholder for the new tab functionality
+            self.new_frame.tkraise()
 
         def show_main_tab():
-            pass  # Placeholder for the main tab functionality
+            self.main_frame.tkraise()
 
-        file_menu = Menu(menu_bar, tearoff=0)
-        menu_bar.add_cascade(label="Plik", menu=file_menu)
-        file_menu.add_command(label="Wyjście", command=self.root.quit)
-        file_menu.add_command(label="Główny widok", command=show_main_tab)
         help_menu = Menu(menu_bar, tearoff=0)
-        menu_bar.add_cascade(label="Pomoc", menu=help_menu)
+        menu_bar.add_command(label="Główny widok", command=show_main_tab)
         menu_bar.add_command(label="Przelicznik walut", command=show_new_tab)
+        menu_bar.add_cascade(label="Pomoc", menu=help_menu)
         help_menu.add_command(label="O aplikacji", command=about)
 
     
@@ -41,20 +46,20 @@ class DateSelectorDialog:
         self.results = {"start": None, "end": None, "currency": None}
 
         self.calendar_from = DateEntry(
-            self.root, width=15, mindate=min_date, maxdate=max_date, date_pattern='yyyy-mm-dd'
+            self.main_frame, width=15, mindate=min_date, maxdate=max_date, date_pattern='yyyy-mm-dd'
         )
         self.calendar_to = DateEntry(
-            self.root, width=15, mindate=min_date, maxdate=max_date, date_pattern='yyyy-mm-dd'
+            self.main_frame, width=15, mindate=min_date, maxdate=max_date, date_pattern='yyyy-mm-dd'
         )
 
-        tk.Label(self.root, text="Data początkowa (od):").grid(row=0, column=0, padx=10, pady=20, sticky="w")
+        tk.Label(self.main_frame, text="Data początkowa (od):").grid(row=0, column=0, padx=10, pady=20, sticky="w")
         self.calendar_from.grid(row=0, column=1, padx=10, pady=20)
 
-        tk.Label(self.root, text="Data końcowa (do):").grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        tk.Label(self.main_frame, text="Data końcowa (do):").grid(row=1, column=0, padx=10, pady=5, sticky="w")
         self.calendar_to.grid(row=1, column=1, padx=10, pady=5)
 
-        tk.Label(self.root, text="Waluta:").grid(row=2, column=0, padx=10, pady=15, sticky="w")
-        self.combo = ttk.Combobox(self.root, values=currencies, state="readonly")
+        tk.Label(self.main_frame, text="Waluta:").grid(row=2, column=0, padx=10, pady=15, sticky="w")
+        self.combo = ttk.Combobox(self.main_frame, values=currencies, state="readonly")
         self.combo.current(0)
         self.combo.grid(row=2, column=1, padx=10, pady=15)
 
@@ -62,8 +67,8 @@ class DateSelectorDialog:
         self.results["start"] = self.calendar_from.get_date()
         self.results["end"] = self.calendar_to.get_date()
         self.results["currency"] = self.combo.get()
-        self.root.destroy()
+        self.main_frame.destroy()
 
     def show(self):
-        self.root.mainloop()
+        self.main_frame.mainloop()
         return self.results["start"], self.results["end"], self.results["currency"]
