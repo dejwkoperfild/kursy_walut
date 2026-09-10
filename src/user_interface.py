@@ -96,12 +96,16 @@ class DateSelectorDialog:
     def clear_conversion(self):
             pass
 
-    def export_to_csv(self):
-        self.results["start"] = self.calendar_from.get_date()
-        self.results["end"] = self.calendar_to.get_date()
+    def choose_currency(self, event):
         self.results["currency"] = self.main_currency_combo.get()
         currencies = {currency.name.lower(): currency.value for currency in Currency}
         currency = [k for k, v in currencies.items() if v == self.results["currency"]][0] if self.results["currency"] else None
+        return currency
+
+    def export_to_csv(self):
+        self.results["start"] = self.calendar_from.get_date()
+        self.results["end"] = self.calendar_to.get_date()
+        currency = self.choose_currency(None)
         data = get_exchange_rates(currency, self.results["start"], self.results["end"])
         if data:
             save_to_csv(data, currency, self.results["start"], self.results["end"])
