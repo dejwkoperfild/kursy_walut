@@ -28,5 +28,7 @@ def save_to_png(data, currency, startDate, endDate):
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
     plt.gcf().autofmt_xdate()
+    plt.grid()
     path = f'output_files/{currency}_{startDate}-{endDate}.png'
     plt.savefig(path, dpi=300, bbox_inches='tight')
+    plt.show()
