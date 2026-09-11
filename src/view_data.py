@@ -1,7 +1,4 @@
-import tkinter as tk
-from tkcalendar import DateEntry
 from datetime import date, timedelta
-from tkinter import ttk
 from src.user_interface import DateSelectorDialog
 
 def get_data_from_user(days : int, currencies : dict):
