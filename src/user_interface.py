@@ -93,15 +93,19 @@ class DateSelectorDialog:
 
         # create the widgets for the new tab
         tk.Label(self.new_frame, text="Kwota w PLN:").grid(row=0, column=0, padx=10, pady=(25, 10), sticky="w")
-        
-        tk.Label(self.new_frame, text="Waluta docelowa:").grid(row=1, column=0, padx=10, pady=10, sticky="w")
-        
-        tk.Button(self.new_frame, text="Przelicz", command=self.convert_amount).grid(row=2, column=0, padx=10, pady=15)
-        tk.Button(self.new_frame, text="Wyczyść", command=self.clear_conversion).grid(row=2, column=1, padx=10, pady=15, sticky="w")
+        self.amount_entry = tk.Spinbox(self.new_frame, from_=0, to=100000, increment=0.01, width=15)
+        self.amount_entry.grid(row=0, column=1, padx=10, pady=(25, 10))
+        tk.Label(self.new_frame, text="Kwota w walucie docelowej:").grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        tk.Label(self.new_frame, text="Waluta docelowa:").grid(row=2, column=0, padx=10, pady=10, sticky="w")
+        self.converted_amount_label = tk.Label(self.new_frame, text="0.00")
+        self.converted_amount_label.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+        tk.Button(self.new_frame, text="Przelicz", command=self.convert_amount).grid(row=3, column=0, padx=10, pady=15)
+        tk.Button(self.new_frame, text="Wyczyść", command=self.clear_conversion).grid(row=3, column=1, padx=10, pady=15, sticky="w")
 
         self.converter_currency_combo = ttk.Combobox(self.new_frame, values=currencies, state="readonly")
         self.converter_currency_combo.current(0)
-        self.converter_currency_combo.grid(row=1, column=1, padx=10, pady=10)
+        self.converter_currency_combo.grid(row=2, column=1, padx=10, pady=10)
 
 
     def convert_amount(self):
