@@ -16,9 +16,7 @@ def save_to_csv(data, currency, startDate, endDate):
                 print("Pomyślnie zapisano plik")
 
 def save_to_png(data, currency, startDate, endDate):
-    x_axis = [datetime.strptime(kurs['effectiveDate'], '%Y-%m-%d') for kurs in data['rates']]
-    y_axis = [kurs['bid'] for kurs in data['rates']]
-    z_axis = [kurs['ask'] for kurs in data['rates']]
+    x_axis, y_axis, z_axis = prepare_data_for_graph(data)
     plt.plot(x_axis, y_axis, label='Kurs sprzedaży')
     plt.plot(x_axis, z_axis, label='Kurs kupna')
     plt.title(f"Wykres kursu {currency} od {startDate} do {endDate}")
@@ -32,3 +30,9 @@ def save_to_png(data, currency, startDate, endDate):
     path = f'output_files/{currency}_{startDate}-{endDate}.png'
     plt.savefig(path, dpi=300, bbox_inches='tight')
     plt.show()
+
+def prepare_data_for_graph(data):
+    x_axis = [datetime.strptime(kurs['effectiveDate'], '%Y-%m-%d') for kurs in data['rates']]
+    y_axis = [kurs['bid'] for kurs in data['rates']]
+    z_axis = [kurs['ask'] for kurs in data['rates']]
+    return x_axis, y_axis, z_axis
