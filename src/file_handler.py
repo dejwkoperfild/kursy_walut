@@ -20,6 +20,9 @@ def save_to_png(data, currency, startDate, endDate):
     prepare_graph(data, currency, startDate, endDate)
     path = f'output_files/{currency}_{startDate}-{endDate}.png'
     plt.savefig(path, dpi=300, bbox_inches='tight')
+
+def show_graph(data, currency, startDate, endDate):
+    prepare_graph(data, currency, startDate, endDate)
     plt.show()
 
 def prepare_data_for_graph(data):

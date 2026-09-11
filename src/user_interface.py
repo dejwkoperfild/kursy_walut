@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import Menu
-from src.file_handler import save_to_csv, save_to_png
+from src.file_handler import save_to_csv, save_to_png, show_graph
 from src.nbp_api import get_exchange_rates
 from enum import Enum
 
@@ -86,7 +86,7 @@ class DateSelectorDialog:
         tk.Button(button_frame, text="Eksportuj do CSV", command=self.export_to_csv).grid(
             row=1, column=0, padx=5, pady=5
         )
-        tk.Button(button_frame, text="Pokaż wykres", command=self.export_to_graph).grid(
+        tk.Button(button_frame, text="Pokaż wykres", command=self.show_graph).grid(
                     row=1, column=1, padx=5, pady=5
                 )
 
@@ -135,6 +135,17 @@ class DateSelectorDialog:
         if data:
             save_to_csv(data, currency, self.results["start"], self.results["end"])
             print("Dane zapisane do pliku CSV")
+        else:
+            print("Nie udało się pobrać danych")
+
+    def show_graph(self):
+        self.results["start"] = self.calendar_from.get_date()
+        self.results["end"] = self.calendar_to.get_date()
+        currency = self.choose_currency(None)
+        data = get_exchange_rates(currency, self.results["start"], self.results["end"])
+        if data:
+            show_graph(data, currency, self.results["start"], self.results["end"])
+            print("Wykres został wyświetlony")
         else:
             print("Nie udało się pobrać danych")
 
