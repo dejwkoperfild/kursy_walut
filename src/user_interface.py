@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkcalendar import DateEntry
 from tkinter import Menu
 from src.file_handler import save_to_csv, save_to_png, show_graph
-from src.nbp_api import get_exchange_rates
+from src.nbp_api import get_exchange_rates, get_today_exchange_rate
 from enum import Enum
 
 class Currency(Enum):
@@ -92,7 +92,7 @@ class DateSelectorDialog:
 
 
         # create the widgets for the new tab
-        tk.Label(self.new_frame, text="Kwota w PLN:").grid(row=0, column=0, padx=10, pady=(25, 10), sticky="w")
+        tk.Label(self.new_frame, text="Kwota w PLN:").grid(row=0, column=0, padx=10, pady=10, sticky="w")
         self.amount_entry = tk.Spinbox(self.new_frame, from_=0, to=100000, increment=0.01, width=15)
         self.amount_entry.grid(row=0, column=1, padx=10, pady=(25, 10))
         tk.Label(self.new_frame, text="Kwota w walucie docelowej:").grid(row=1, column=0, padx=10, pady=10, sticky="w")
@@ -109,7 +109,17 @@ class DateSelectorDialog:
 
 
     def convert_amount(self):
-            pass
+        amount = float(self.amount_entry.get())
+        currency = self.converter_currency_combo.get()
+        currencies = {currency.name.lower(): currency.value for currency in Currency}
+        currency_code = [k for k, v in currencies.items() if v == currency][0] if currency else None
+        data = get_today_exchange_rate(currency_code)
+        if data:
+            rate = data['rates'][0]['bid']
+            converted_amount = amount / rate
+            self.converted_amount_label.config(text=f"{converted_amount:.2f}")
+        else:
+            print("Nie udało się pobrać danych")
 
     def clear_conversion(self):
             pass

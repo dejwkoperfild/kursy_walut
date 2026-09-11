@@ -41,3 +41,23 @@ def get_exchange_rates(currency, start_date, end_date):
 
     return None
 
+def get_today_exchange_rate(currency):
+    session = build_session()
+    payload = {'format':'json'}
+    url = f"https://api.nbp.pl/api/exchangerates/rates/c/{currency}/today"
+    try:
+        response = session.get(url, params = payload, timeout = 15)
+        response.raise_for_status()
+        data = response.json()
+        return data
+
+    except requests.exceptions.HTTPError as e:
+        logging.error(f"Błąd HTTP: {e.response.status_code} - {e}")
+    except requests.exceptions.ConnectionError as e:
+        logging.error(f"Błąd połączenia z API NBP: {e}")
+    except requests.exceptions.Timeout as e:
+        logging.error(f"Przekroczono czas oczekiwania: {e}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Nieoczekiwany błąd żądania: {e}")
+
+    return None
