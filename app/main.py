@@ -19,8 +19,6 @@ if startDate and endDate and currency:
     else:
         print("Nie udało się pobrać danych")
 
-else:
-    print("Nie udało się pobrać danych od użytkownika")
 
 
 
