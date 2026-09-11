@@ -80,12 +80,15 @@ class DateSelectorDialog:
         tk.Button(button_frame, text="Zapisz i zamknij", command=self.save_and_close).grid(
             row=0, column=0, padx=5, pady=5
         )
-        tk.Button(button_frame, text="Eksportuj do wykresu", command=self.export_to_graph).grid(
+        tk.Button(button_frame, text="Eksportuj wykres do PNG", command=self.export_to_graph).grid(
             row=0, column=1, padx=5, pady=5
         )
         tk.Button(button_frame, text="Eksportuj do CSV", command=self.export_to_csv).grid(
             row=1, column=0, padx=5, pady=5
         )
+        tk.Button(button_frame, text="Pokaż wykres", command=self.export_to_graph).grid(
+                    row=1, column=1, padx=5, pady=5
+                )
 
 
         # create the widgets for the new tab
