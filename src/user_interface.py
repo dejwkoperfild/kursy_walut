@@ -122,7 +122,9 @@ class DateSelectorDialog:
             print("Nie udało się pobrać danych")
 
     def clear_conversion(self):
-            pass
+        self.amount_entry.delete(0, tk.END)
+        self.amount_entry.insert(0, "0.00")
+        self.converted_amount_label.config(text="0.00")
 
     def choose_currency(self, event):
         self.results["currency"] = self.main_currency_combo.get()
