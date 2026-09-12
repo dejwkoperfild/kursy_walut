@@ -12,6 +12,8 @@ class Currency(Enum):
     USD = "Dolar amerykański"
     SEK = "Korona szwedzka"
     GBP = "Funt szterling"
+    DKK = "Korona duńska"
+    UAH = "Hrywna ukraińska"
 
 class DateSelectorDialog:
     def __init__(self, min_date, max_date, currencies):

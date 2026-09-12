@@ -5,18 +5,18 @@ import matplotlib.pyplot as plt
 
 def save_to_csv(data, currency, startDate, endDate):
     with open(f'output_files/kursy_{currency}_{startDate}-{endDate}.csv','w',newline='') as csvfile:
-                fieldnames = ['Data','kurs_sprzedazy','kurs_kupna']
+                fieldnames = ['Data','kurs_sprzedazy','kurs_kupna','spread']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()
                 for kurs in data['rates']:
                     data_publikacji = kurs['effectiveDate']
                     kurs_sprzedzy = kurs['bid']
                     kurs_kupna = kurs['ask']
-                    writer.writerow({'Data': data_publikacji, 'kurs_sprzedazy': kurs_sprzedzy, 'kurs_kupna': kurs_kupna})
+                    spread = kurs_kupna - kurs_sprzedzy
+                    writer.writerow({'Data': data_publikacji, 'kurs_sprzedazy': kurs_sprzedzy, 'kurs_kupna': kurs_kupna, 'spread': f"{spread:.4f}"})
                 print("Pomyślnie zapisano plik")
 
 def save_to_png(data, currency, startDate, endDate):
-    x_axis, y_axis, z_axis = prepare_data_for_graph(data)
     prepare_graph(data, currency, startDate, endDate)
     path = f'output_files/{currency}_{startDate}-{endDate}.png'
     plt.savefig(path, dpi=300, bbox_inches='tight')
