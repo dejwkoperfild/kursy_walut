@@ -17,7 +17,6 @@ def save_to_csv(data, currency, startDate, endDate):
                 print("Pomyślnie zapisano plik")
 
 def save_to_png(data, currency, startDate, endDate):
-    x_axis, y_axis, z_axis = prepare_data_for_graph(data)
     prepare_graph(data, currency, startDate, endDate)
     path = f'output_files/{currency}_{startDate}-{endDate}.png'
     plt.savefig(path, dpi=300, bbox_inches='tight')
