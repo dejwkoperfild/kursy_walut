@@ -13,8 +13,7 @@ currency = [k for k, v in currencies.items() if v == selected_label][0] if selec
 if startDate and endDate and currency:
     data = get_exchange_rates(currency, startDate, endDate)
     if data:
-        save_to_csv(data, currency, startDate, endDate)
-        save_to_png(data, currency, startDate, endDate)
+        print("Pobrano dane z NBP API")
 
     else:
         print("Nie udało się pobrać danych")
