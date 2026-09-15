@@ -94,16 +94,39 @@ class DateSelectorDialog:
 
 
         # create the widgets for the new tab
-        tk.Label(self.new_frame, text="Kwota w PLN:").grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.is_reversed = False
+        self.source_currency_label = tk.StringVar(value="Kwota w PLN:")
+        self.target_currency_label = tk.StringVar(value="Kwota w walucie docelowej:")
+
+        tk.Label(self.new_frame, textvariable=self.source_currency_label).grid(
+            row=0, column=0, padx=10, pady=10, sticky="w"
+        )
         self.amount_entry = tk.Spinbox(self.new_frame, from_=0, to=100000, increment=0.01, width=15)
         self.amount_entry.grid(row=0, column=1, padx=10, pady=(25, 10))
-        tk.Label(self.new_frame, text="Kwota w walucie docelowej:").grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+        
+        tk.Label(self.new_frame, textvariable=self.target_currency_label).grid(
+            row=1, column=0, padx=10, pady=10, sticky="w"
+        )
         tk.Label(self.new_frame, text="Waluta docelowa:").grid(row=2, column=0, padx=10, pady=10, sticky="w")
         self.converted_amount_label = tk.Label(self.new_frame, text="0.00")
         self.converted_amount_label.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
-        tk.Button(self.new_frame, text="Przelicz", command=self.convert_amount).grid(row=3, column=0, padx=10, pady=15)
-        tk.Button(self.new_frame, text="Wyczyść", command=self.clear_conversion).grid(row=3, column=1, padx=10, pady=15, sticky="w")
+        conversion_button_frame = tk.Frame(self.new_frame)
+        conversion_button_frame.grid(row=3, column=0, columnspan=2, pady=15)
+        conversion_button_frame.grid_columnconfigure(0, weight=1)
+        conversion_button_frame.grid_columnconfigure(1, weight=1)
+
+        tk.Button(conversion_button_frame, text="Przelicz", command=self.convert_amount).grid(
+            row=0, column=0, padx=5, pady=5
+        )
+        tk.Button(conversion_button_frame, text="Wyczyść", command=self.clear_conversion).grid(
+            row=0, column=1, padx=5, pady=5
+        )
+        tk.Button(conversion_button_frame, text="↔", command=self.reverse_conversion, width=3).grid(
+            row=1, column=0, columnspan=2, padx=5, pady=5
+        )
+        
 
         self.converter_currency_combo = ttk.Combobox(self.new_frame, values=currencies, state="readonly")
         self.converter_currency_combo.current(0)
@@ -118,10 +141,20 @@ class DateSelectorDialog:
         data = get_today_exchange_rate(currency_code)
         if data:
             rate = data['rates'][0]['bid']
-            converted_amount = amount / rate
+            converted_amount = amount * rate if self.is_reversed else amount / rate
             self.converted_amount_label.config(text=f"{converted_amount:.2f}")
         else:
             print("Nie udało się pobrać danych")
+
+    def reverse_conversion(self):
+        self.is_reversed = not self.is_reversed
+        if self.is_reversed:
+            self.source_currency_label.set("Kwota w walucie obcej:")
+            self.target_currency_label.set("Kwota w PLN:")
+        else:
+            self.source_currency_label.set("Kwota w PLN:")
+            self.target_currency_label.set("Kwota w walucie docelowej:")
+        self.convert_amount()
 
     def clear_conversion(self):
         self.amount_entry.delete(0, tk.END)
