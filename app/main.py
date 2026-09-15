@@ -1,7 +1,6 @@
 from src.user_interface import Currency
 from src.view_data import get_data_from_user
 from src.nbp_api import get_exchange_rates
-from src.file_handler import save_to_csv, save_to_png
 
 
 
