@@ -36,7 +36,40 @@ class DateSelectorDialog:
         menu_bar = Menu(self.root)
         self.root.config(menu=menu_bar)
         def about():
-            print("About this application")
+            instruction_window = tk.Toplevel(self.root)
+            instruction_window.title("O aplikacji")
+            instruction_window.geometry("500x400")
+            instruction_window.minsize(350, 300)
+            instruction_window.columnconfigure(0, weight=1)
+            instruction_window.rowconfigure(1, weight=1)
+
+            title_label = tk.Label(instruction_window, text="Jak korzystać z programu?", font=("Arial", 14, "bold"))
+            title_label.grid(row=0, column=0, pady=(15, 10), sticky="n")
+
+            text_content = (
+                "Pierwsza zakładka umożliwia wybór dat i waluty. Wybierz zakres dat i walutę. Użyj przycisków zgodnie z opisem.\n"
+                "Druga zakładka umożliwia przeliczanie kwot między PLN a wybraną walutą. Wprowadź kwotę, wybierz walutę i kliknij 'Przelicz'.\n"
+                "Możesz również odwrócić kierunek przeliczenia klikając przycisk ↔. Aby wyczyścić pola, kliknij 'Wyczyść'."
+            )
+
+            instruction_label = tk.Label(
+                instruction_window,
+                text=text_content,
+                justify="left",
+                anchor="w",
+                wraplength=430,
+            )
+            instruction_label.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
+
+            def update_wraplength(event=None):
+                new_wrap = max(200, instruction_window.winfo_width() - 70)
+                instruction_label.configure(wraplength=new_wrap)
+
+            instruction_window.bind("<Configure>", update_wraplength)
+            instruction_window.after(50, update_wraplength)
+
+            close_button = tk.Button(instruction_window, text="Zamknij", command=instruction_window.destroy)
+            close_button.grid(row=2, column=0, pady=(10, 20))
 
 
         def show_new_tab():
@@ -108,7 +141,7 @@ class DateSelectorDialog:
         tk.Label(self.new_frame, textvariable=self.target_currency_label).grid(
             row=1, column=0, padx=10, pady=10, sticky="w"
         )
-        tk.Label(self.new_frame, text="Waluta docelowa:").grid(row=2, column=0, padx=10, pady=10, sticky="w")
+        tk.Label(self.new_frame, text="Waluta obca:").grid(row=2, column=0, padx=10, pady=10, sticky="w")
         self.converted_amount_label = tk.Label(self.new_frame, text="0.00")
         self.converted_amount_label.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
