@@ -3,19 +3,25 @@ from src.view_data import get_data_from_user
 from src.nbp_api import get_exchange_rates
 
 
+def main():
+    currencies = {currency.name.lower(): currency.value for currency in Currency}
+    days = 183
+    start_date, end_date, selected_label = get_data_from_user(days, currencies)
+    currency = [
+        code for code, label in currencies.items() if label == selected_label
+    ][0] if selected_label else None
 
-currencies = {currency.name.lower(): currency.value for currency in Currency}
-days = 93
-startDate, endDate, selected_label = get_data_from_user(days, currencies)
-currency = [k for k, v in currencies.items() if v == selected_label][0] if selected_label else None
+    if start_date and end_date and currency:
+        data = get_exchange_rates(currency, start_date, end_date)
+        if data:
+            print("Pobrano dane z NBP API")
 
-if startDate and endDate and currency:
-    data = get_exchange_rates(currency, startDate, endDate)
-    if data:
-        print("Pobrano dane z NBP API")
+        else:
+            print("Nie udało się pobrać danych")
 
-    else:
-        print("Nie udało się pobrać danych")
+
+if __name__ == "__main__":
+    main()
 
 
 
