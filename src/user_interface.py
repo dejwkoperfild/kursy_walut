@@ -167,17 +167,43 @@ class DateSelectorDialog:
 
 
     def convert_amount(self):
-        amount = float(self.amount_entry.get())
+        try:
+            amount = float(self.amount_entry.get())
+        except (TypeError, ValueError):
+            print("Podaj poprawną kwotę")
+            return
+
+        if amount < 0:
+            print("Kwota nie może być ujemna")
+            return
+
         currency = self.converter_currency_combo.get()
         currencies = {currency.name.lower(): currency.value for currency in Currency}
         currency_code = [k for k, v in currencies.items() if v == currency][0] if currency else None
         data = get_today_exchange_rate(currency_code)
-        if data:
-            rate = data['rates'][0]['bid']
-            converted_amount = amount * rate if self.is_reversed else amount / rate
-            self.converted_amount_label.config(text=f"{converted_amount:.2f}")
-        else:
+
+        if not data or not data.get("rates"):
             print("Nie udało się pobrać danych")
+            return
+
+        try:
+            rate = data["rates"][0]["bid" if self.is_reversed else "ask"]
+            converted_amount = amount * rate if self.is_reversed else amount / rate
+        except (KeyError, TypeError, ZeroDivisionError):
+            print("Nieprawidłowe dane kursu")
+            return
+
+        self.converted_amount_label.config(text=f"{converted_amount:.2f}")
+
+    def _get_selected_period(self):
+        start_date = self.calendar_from.get_date()
+        end_date = self.calendar_to.get_date()
+        if start_date > end_date:
+            print("Data początkowa nie może być późniejsza od końcowej")
+            return None
+
+        currency = self.choose_currency(None)
+        return start_date, end_date, currency
 
     def reverse_conversion(self):
         self.is_reversed = not self.is_reversed
@@ -201,9 +227,11 @@ class DateSelectorDialog:
         return currency
 
     def export_to_graph(self):
-        self.results["start"] = self.calendar_from.get_date()
-        self.results["end"] = self.calendar_to.get_date()
-        currency = self.choose_currency(None)
+        selected_period = self._get_selected_period()
+        if selected_period is None:
+            return
+
+        self.results["start"], self.results["end"], currency = selected_period
         data = get_exchange_rates(currency, self.results["start"], self.results["end"])
         if data:
             save_to_png(data, currency, self.results["start"], self.results["end"])
@@ -212,9 +240,11 @@ class DateSelectorDialog:
             print("Nie udało się pobrać danych")
 
     def export_to_csv(self):
-        self.results["start"] = self.calendar_from.get_date()
-        self.results["end"] = self.calendar_to.get_date()
-        currency = self.choose_currency(None)
+        selected_period = self._get_selected_period()
+        if selected_period is None:
+            return
+
+        self.results["start"], self.results["end"], currency = selected_period
         data = get_exchange_rates(currency, self.results["start"], self.results["end"])
         if data:
             save_to_csv(data, currency, self.results["start"], self.results["end"])
@@ -223,9 +253,11 @@ class DateSelectorDialog:
             print("Nie udało się pobrać danych")
 
     def show_graph(self):
-        self.results["start"] = self.calendar_from.get_date()
-        self.results["end"] = self.calendar_to.get_date()
-        currency = self.choose_currency(None)
+        selected_period = self._get_selected_period()
+        if selected_period is None:
+            return
+
+        self.results["start"], self.results["end"], currency = selected_period
         data = get_exchange_rates(currency, self.results["start"], self.results["end"])
         if data:
             show_graph(data, currency, self.results["start"], self.results["end"])

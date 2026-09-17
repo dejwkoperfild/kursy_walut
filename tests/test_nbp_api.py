@@ -1,8 +1,9 @@
 from unittest.mock import Mock, patch
 import requests
+import pytest
 
 from src.file_handler import prepare_data_for_graph, save_to_csv
-from src.nbp_api import get_exchange_rates, get_today_exchange_rate
+from src.nbp_api import build_session, get_exchange_rates, get_today_exchange_rate
 from src.user_interface import DateSelectorDialog
 
 
@@ -25,6 +26,14 @@ class FakeCombo:
         self.value = value
 
     def get(self):
+        return self.value
+
+
+class FakeCalendar:
+    def __init__(self, value):
+        self.value = value
+
+    def get_date(self):
         return self.value
 
 
@@ -122,10 +131,38 @@ def test_get_today_exchange_rate_success():
     response.raise_for_status.assert_called_once_with()
 
 
+@pytest.mark.parametrize(
+    "exception",
+    [
+        requests.exceptions.ConnectionError("connection failed"),
+        requests.exceptions.Timeout("request timed out"),
+        requests.exceptions.RequestException("request failed"),
+    ],
+)
+def test_get_today_exchange_rate_returns_none_for_request_errors(exception):
+    session = Mock()
+    session.get.side_effect = exception
+
+    with patch("src.nbp_api.build_session", return_value=session):
+        result = get_today_exchange_rate("EUR")
+
+    assert result is None
+
+
+def test_build_session_configures_get_retries():
+    session = build_session()
+
+    retry = session.get_adapter("https://").max_retries
+
+    assert retry.total == 4
+    assert retry.backoff_factor == 1
+    assert retry.status_forcelist == [429, 500, 502, 503, 504]
+    assert retry.allowed_methods == {"GET"}
+
+
 def test_save_to_csv_writes_expected_file(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     output_dir = tmp_path / "output_files"
-    output_dir.mkdir()
 
     data = {
         "rates": [
@@ -143,6 +180,18 @@ def test_save_to_csv_writes_expected_file(tmp_path, monkeypatch):
     assert "Data,kurs_sprzedazy,kurs_kupna,spread" in content
     assert "2024-01-01" in content
     assert "0.2000" in content
+
+
+def test_save_to_csv_writes_header_for_empty_rates(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    output_dir = tmp_path / "output_files"
+
+    save_to_csv({"rates": []}, "EUR", "2024-01-01", "2024-01-02")
+
+    file_path = output_dir / "kursy_EUR_2024-01-01-2024-01-02.csv"
+    assert file_path.read_text(encoding="utf-8") == (
+        "Data,kurs_sprzedazy,kurs_kupna,spread\n"
+    )
 
 
 def test_prepare_data_for_graph_returns_expected_axes():
@@ -181,3 +230,46 @@ def test_reverse_conversion_and_clear_conversion_update_values():
 
     assert dialog.amount_entry.get() == "0.00"
     assert dialog.converted_amount_label.text == "0.00"
+
+
+def test_convert_amount_divides_by_rate_in_default_direction():
+    dialog = object.__new__(DateSelectorDialog)
+    dialog.is_reversed = False
+    dialog.amount_entry = FakeEntry("100")
+    dialog.converted_amount_label = FakeLabel("0.00")
+    dialog.converter_currency_combo = FakeCombo("Dolar amerykański")
+
+    with patch(
+        "src.user_interface.get_today_exchange_rate",
+        return_value={"rates": [{"bid": 4.0, "ask": 4.2}]},
+    ) as get_rate:
+        dialog.convert_amount()
+
+    get_rate.assert_called_once_with("usd")
+    assert dialog.converted_amount_label.text == "23.81"
+
+
+def test_convert_amount_ignores_invalid_amount():
+    dialog = object.__new__(DateSelectorDialog)
+    dialog.amount_entry = FakeEntry("not a number")
+    dialog.converted_amount_label = FakeLabel("0.00")
+    dialog.converter_currency_combo = FakeCombo("Dolar amerykański")
+
+    with patch("src.user_interface.get_today_exchange_rate") as get_rate:
+        dialog.convert_amount()
+
+    get_rate.assert_not_called()
+    assert dialog.converted_amount_label.text == "0.00"
+
+
+def test_export_to_csv_rejects_reversed_dates():
+    dialog = object.__new__(DateSelectorDialog)
+    dialog.calendar_from = FakeCalendar("2024-01-02")
+    dialog.calendar_to = FakeCalendar("2024-01-01")
+    dialog.results = {"start": None, "end": None, "currency": None}
+
+    with patch("src.user_interface.get_exchange_rates") as get_rates:
+        dialog.export_to_csv()
+
+    get_rates.assert_not_called()
+    assert dialog.results == {"start": None, "end": None, "currency": None}
