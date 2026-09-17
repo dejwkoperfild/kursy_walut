@@ -233,9 +233,9 @@ def test_convert_amount_divides_by_rate_in_default_direction():
 
     with patch(
         "src.user_interface.get_today_exchange_rate",
-        return_value={"rates": [{"bid": 4.0}]},
+        return_value={"rates": [{"bid": 4.0, "ask": 4.2}]},
     ) as get_rate:
         dialog.convert_amount()
 
     get_rate.assert_called_once_with("usd")
-    assert dialog.converted_amount_label.text == "25.00"
+    assert dialog.converted_amount_label.text == "23.81"

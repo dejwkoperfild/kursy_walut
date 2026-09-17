@@ -173,7 +173,7 @@ class DateSelectorDialog:
         currency_code = [k for k, v in currencies.items() if v == currency][0] if currency else None
         data = get_today_exchange_rate(currency_code)
         if data:
-            rate = data['rates'][0]['bid']
+            rate = data['rates'][0]['bid' if self.is_reversed else 'ask']
             converted_amount = amount * rate if self.is_reversed else amount / rate
             self.converted_amount_label.config(text=f"{converted_amount:.2f}")
         else:
