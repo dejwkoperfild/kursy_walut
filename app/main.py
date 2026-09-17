@@ -5,7 +5,7 @@ from src.nbp_api import get_exchange_rates
 
 def main():
     currencies = {currency.name.lower(): currency.value for currency in Currency}
-    days = 183
+    days = 93
     start_date, end_date, selected_label = get_data_from_user(days, currencies)
     currency = [
         code for code, label in currencies.items() if label == selected_label
