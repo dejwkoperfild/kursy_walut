@@ -1,9 +1,12 @@
 import csv
 import matplotlib.dates as mdates
 from datetime import datetime
+from pathlib import Path
 import matplotlib.pyplot as plt
 
 def save_to_csv(data, currency, startDate, endDate):
+    output_dir = Path("output_files")
+    output_dir.mkdir(parents=True, exist_ok=True)
     with open(f'output_files/kursy_{currency}_{startDate}-{endDate}.csv','w',newline='') as csvfile:
                 fieldnames = ['Data','kurs_sprzedazy','kurs_kupna','spread']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)

@@ -155,7 +155,6 @@ def test_build_session_configures_get_retries():
 def test_save_to_csv_writes_expected_file(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     output_dir = tmp_path / "output_files"
-    output_dir.mkdir()
 
     data = {
         "rates": [
@@ -178,7 +177,6 @@ def test_save_to_csv_writes_expected_file(tmp_path, monkeypatch):
 def test_save_to_csv_writes_header_for_empty_rates(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     output_dir = tmp_path / "output_files"
-    output_dir.mkdir()
 
     save_to_csv({"rates": []}, "EUR", "2024-01-01", "2024-01-02")
 
