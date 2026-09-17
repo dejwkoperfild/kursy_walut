@@ -29,6 +29,14 @@ class FakeCombo:
         return self.value
 
 
+class FakeCalendar:
+    def __init__(self, value):
+        self.value = value
+
+    def get_date(self):
+        return self.value
+
+
 class FakeLabel:
     def __init__(self, text="0.00"):
         self.text = text
@@ -239,3 +247,29 @@ def test_convert_amount_divides_by_rate_in_default_direction():
 
     get_rate.assert_called_once_with("usd")
     assert dialog.converted_amount_label.text == "23.81"
+
+
+def test_convert_amount_ignores_invalid_amount():
+    dialog = object.__new__(DateSelectorDialog)
+    dialog.amount_entry = FakeEntry("not a number")
+    dialog.converted_amount_label = FakeLabel("0.00")
+    dialog.converter_currency_combo = FakeCombo("Dolar amerykański")
+
+    with patch("src.user_interface.get_today_exchange_rate") as get_rate:
+        dialog.convert_amount()
+
+    get_rate.assert_not_called()
+    assert dialog.converted_amount_label.text == "0.00"
+
+
+def test_export_to_csv_rejects_reversed_dates():
+    dialog = object.__new__(DateSelectorDialog)
+    dialog.calendar_from = FakeCalendar("2024-01-02")
+    dialog.calendar_to = FakeCalendar("2024-01-01")
+    dialog.results = {"start": None, "end": None, "currency": None}
+
+    with patch("src.user_interface.get_exchange_rates") as get_rates:
+        dialog.export_to_csv()
+
+    get_rates.assert_not_called()
+    assert dialog.results == {"start": None, "end": None, "currency": None}
